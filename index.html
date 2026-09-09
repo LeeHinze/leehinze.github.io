@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Lee Hinze — developer and cybersecurity enthusiast building secure, thoughtful digital experiences.">
+  <meta name="theme-color" content="#07080a">
+  <title>Lee Hinze — Developer</title>
+  <style>
+    :root {
+      --background: #07080a;
+      --surface: #0d0f12;
+      --surface-raised: #121419;
+      --text: #f4f5f6;
+      --muted: #90959e;
+      --accent: #b98aff;
+      --purple: #8b4de8;
+      --line: #20242a;
+      --nav-height: 72px;
+      --content: 1180px;
+    }
+
+    * { box-sizing: border-box; scrollbar-width: none; }
+    *::-webkit-scrollbar { display: none; width: 0; height: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+      color: var(--text);
+      background: var(--background);
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -30%;
+      z-index: -3;
+      background:
+        radial-gradient(ellipse at 22% 35%, rgba(82, 34, 143, .18) 0%, rgba(39, 16, 70, .1) 24%, transparent 50%),
+        radial-gradient(ellipse at 78% 66%, rgba(100, 45, 176, .14) 0%, rgba(34, 14, 61, .08) 26%, transparent 52%),
+        #050607;
+      animation: ambientShift 28s linear infinite;
+      transform-origin: center;
+      pointer-events: none;
+    }
+    .flow-background { position: fixed; inset: 0; z-index: -2; overflow: hidden; pointer-events: none; }
+    .flow-background::after { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,.34); }
+    .flow-orb { position: absolute; border-radius: 46% 54% 62% 38% / 45% 42% 58% 55%; filter: blur(90px); opacity: .28; mix-blend-mode: screen; will-change: transform, border-radius; }
+    .flow-orb.one { width: 55vw; height: 48vw; top: -25%; right: -14%; background: rgba(91, 38, 159, .3); animation: flowOne 26s linear infinite; }
+    .flow-orb.two { width: 44vw; height: 54vw; bottom: -34%; left: -12%; background: rgba(110, 52, 190, .22); animation: flowTwo 32s linear infinite; }
+    .flow-orb.three { width: 30vw; height: 28vw; top: 42%; left: 40%; background: rgba(70, 27, 124, .2); animation: flowThree 22s linear infinite; }
+    a { color: inherit; }
+    button, input { font: inherit; }
+    button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .container { width: min(calc(100% - 48px), var(--content)); margin-inline: auto; }
+
+    .site-nav {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 50;
+      height: var(--nav-height);
+      background: rgba(7, 8, 10, .9);
+      border-bottom: 1px solid transparent;
+      backdrop-filter: blur(16px);
+      transition: border-color .25s ease;
+    }
+    .site-nav.scrolled { border-color: var(--line); }
+    .nav-inner { height: 100%; display: flex; align-items: center; justify-content: space-between; }
+    .brand { font-size: .9rem; font-weight: 700; letter-spacing: -.02em; text-decoration: none; }
+    .nav-links { display: flex; align-items: center; gap: 30px; }
+    .nav-link {
+      padding: 0;
+      color: #c8cbd0;
+      border: 0;
+      background: none;
+      font-size: .78rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: color .2s ease;
+    }
+    .nav-link:hover, .nav-link[aria-expanded="true"] { color: var(--accent); }
+
+    .blog-panel {
+      position: fixed;
+      top: calc(var(--nav-height) + 12px);
+      right: max(24px, calc((100vw - var(--content)) / 2));
+      z-index: 45;
+      width: min(390px, calc(100vw - 32px));
+      max-height: 0;
+      overflow: hidden;
+      visibility: hidden;
+      opacity: 0;
+      transform: translateY(-14px) scale(.98);
+      transform-origin: top right;
+      border: 1px solid transparent;
+      border-radius: 16px;
+      background: var(--surface);
+      box-shadow: 0 28px 80px rgba(0,0,0,.52);
+      transition: max-height .5s cubic-bezier(.22,1,.36,1), opacity .24s ease, transform .4s cubic-bezier(.22,1,.36,1), visibility .4s, border-color .3s;
+    }
+    .blog-panel.open {
+      max-height: min(620px, calc(100vh - 100px));
+      visibility: visible;
+      opacity: 1;
+      transform: none;
+      border-color: var(--line);
+    }
+    .blog-panel-inner { max-height: min(618px, calc(100vh - 102px)); padding: 20px; overflow-y: auto; }
+    .panel-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .panel-top h2 { margin: 0; font-size: .92rem; letter-spacing: -.02em; }
+    .view-all { color: var(--accent); font-size: .7rem; font-weight: 700; text-decoration: none; }
+    .blog-search {
+      width: 100%;
+      margin-bottom: 12px;
+      padding: 11px 12px;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      outline: none;
+      background: #090b0e;
+      font-size: .78rem;
+    }
+    .blog-search:focus { border-color: rgba(185,138,255,.65); }
+    .post-list { display: flex; flex-direction: column; }
+    .post-link {
+      display: block;
+      padding: 13px 4px;
+      border-bottom: 1px solid var(--line);
+      text-decoration: none;
+      transition: padding-left .2s ease, background .2s ease;
+    }
+    .post-link:hover { padding-left: 9px; background: rgba(157,99,255,.06); }
+    .post-link:last-child { border-bottom: 0; }
+    .post-date { color: var(--accent); font-size: .62rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
+    .post-title { margin-top: 3px; color: #e9eaec; font-size: .82rem; font-weight: 650; }
+    .panel-status { padding: 18px 0; color: var(--muted); font-size: .76rem; }
+
+    main { min-height: 100vh; }
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: calc(var(--nav-height) + 50px) 0 70px;
+    }
+    .hero-inner { display: flex; align-items: center; justify-content: flex-start; }
+    .hero-copy { flex: 0 1 720px; max-width: 720px; animation: enterLeft .8s cubic-bezier(.22,1,.36,1) both; }
+    .intro { margin: 0 0 15px; color: var(--accent); font-size: .76rem; font-weight: 600; }
+    .identity { display: flex; align-items: center; gap: 22px; }
+    .profile-photo { width: clamp(72px, 8vw, 104px); height: clamp(72px, 8vw, 104px); flex: 0 0 auto; object-fit: cover; border: 2px solid rgba(185,138,255,.42); border-radius: 50%; background: var(--surface); box-shadow: 0 0 0 7px rgba(157,99,255,.055), 0 20px 50px rgba(0,0,0,.42); }
+    h1 { margin: 0; font-size: clamp(3.4rem, 7vw, 6.4rem); font-weight: 400; line-height: .98; letter-spacing: -.065em; }
+    .role { margin: 17px 0 20px; color: #b7bbc2; font-size: clamp(1.55rem, 3vw, 2.45rem); font-weight: 300; letter-spacing: -.04em; }
+    .summary { max-width: 610px; margin: 0; color: var(--muted); font-size: .9rem; line-height: 1.75; }
+    .summary a { color: var(--accent); text-decoration: none; }
+    .hero-actions { display: flex; gap: 12px; margin-top: 28px; }
+    .button {
+      display: inline-flex;
+      min-height: 42px;
+      align-items: center;
+      padding: 0 17px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: #d9dce0;
+      background: var(--surface);
+      font-size: .74rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform .2s, color .2s, border-color .2s;
+    }
+    .button:hover { color: var(--accent); border-color: rgba(185,138,255,.48); transform: translateY(-2px); }
+
+    .work { padding: 110px 0 130px; border-top: 1px solid #101216; }
+    .section-label { color: var(--accent); font-size: .7rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+    .section-title { max-width: 700px; margin: 10px 0 42px; font-size: clamp(2rem,4vw,3.4rem); font-weight: 400; line-height: 1.15; letter-spacing: -.045em; }
+    .project-list { display: flex; flex-wrap: wrap; gap: 18px; }
+    .project {
+      flex: 1 1 340px;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      padding: 28px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--surface);
+      text-decoration: none;
+      transition: transform .25s, border-color .25s, background .25s;
+    }
+    .project:hover { transform: translateY(-5px); border-color: #353a42; background: var(--surface-raised); }
+    .project small { color: var(--accent); font-size: .65rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    .project h3 { margin: 12px 0 10px; font-size: 1.25rem; font-weight: 550; }
+    .project p { margin: 0; color: var(--muted); font-size: .82rem; }
+    .project-arrow { margin-top: auto; color: var(--purple); font-size: 1.1rem; }
+
+    footer { color: var(--muted); background: var(--background); border-top: 1px solid #101216; }
+    .footer-inner { min-height: 150px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { color: #d5d7db; font-size: .75rem; font-weight: 700; text-decoration: none; }
+    .footer-links a:hover { color: var(--accent); }
+    footer p { margin: 0; font-size: .72rem; }
+
+    @keyframes enterLeft { from { opacity: 0; transform: translateX(-28px); } }
+    @keyframes ambientShift {
+      0%,100% { transform: scale(1) rotate(0deg); }
+      33% { transform: scale(1.045) rotate(1.5deg); }
+      66% { transform: scale(1.025) rotate(-1deg); }
+    }
+    @keyframes flowOne {
+      0%,100% { transform: translate(0,0) rotate(0deg) scale(1); border-radius: 46% 54% 62% 38% / 45% 42% 58% 55%; }
+      33% { transform: translate(-12vw,13vh) rotate(24deg) scale(1.1); border-radius: 65% 35% 40% 60% / 58% 65% 35% 42%; }
+      66% { transform: translate(-5vw,22vh) rotate(47deg) scale(.94); border-radius: 38% 62% 57% 43% / 63% 39% 61% 37%; }
+    }
+    @keyframes flowTwo {
+      0%,100% { transform: translate(0,0) rotate(0deg) scale(1); border-radius: 46% 54% 62% 38% / 45% 42% 58% 55%; }
+      33% { transform: translate(18vw,-14vh) rotate(-22deg) scale(.92); border-radius: 35% 65% 58% 42% / 66% 38% 62% 34%; }
+      66% { transform: translate(9vw,-25vh) rotate(-44deg) scale(1.08); border-radius: 61% 39% 35% 65% / 40% 61% 39% 60%; }
+    }
+    @keyframes flowThree {
+      0%,100% { transform: translate(0,0) rotate(0deg) scale(1); border-radius: 46% 54% 62% 38% / 45% 42% 58% 55%; }
+      33% { transform: translate(12vw,-17vh) rotate(32deg) scale(1.18); border-radius: 62% 38% 65% 35% / 38% 60% 40% 62%; }
+      66% { transform: translate(-10vw,-8vh) rotate(68deg) scale(.9); border-radius: 37% 63% 42% 58% / 64% 43% 57% 36%; }
+    }
+
+    @media (max-width: 850px) {
+      .hero { min-height: auto; padding-top: 140px; }
+      .hero-inner { align-items: flex-start; }
+    }
+    @media (max-width: 560px) {
+      .container { width: min(calc(100% - 30px), var(--content)); }
+      .nav-links { gap: 17px; }
+      .nav-link[href="#work"] { display: none; }
+      h1 { font-size: 3.55rem; }
+      .role { font-size: 1.55rem; }
+      .identity { gap: 15px; }
+      .flow-orb { filter: blur(55px); opacity: .4; }
+      .footer-inner { min-height: 170px; flex-direction: column; justify-content: center; text-align: center; }
+      .blog-panel { right: 16px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="flow-background" aria-hidden="true"><span class="flow-orb one"></span><span class="flow-orb two"></span><span class="flow-orb three"></span></div>
+  <header class="site-nav" id="siteNav">
+    <div class="container nav-inner">
+      <a class="brand" href="#home">Lee Hinze</a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a class="nav-link" href="#home">Who am I?</a>
+        <a class="nav-link" href="#work">Works</a>
+        <button class="nav-link" id="blogToggle" type="button" aria-expanded="false" aria-controls="blogPanel">Blog</button>
+        <a class="nav-link" href="mailto:contact@example.com">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <aside class="blog-panel" id="blogPanel" aria-hidden="true">
+    <div class="blog-panel-inner">
+      <div class="panel-top"><h2>Blog / Updates</h2><a class="view-all" href="blog/">View all →</a></div>
+      <input class="blog-search" id="blogSearch" type="search" placeholder="Search updates…" aria-label="Search blog updates">
+      <div class="post-list" id="postList"><div class="panel-status">Loading updates…</div></div>
+    </div>
+  </aside>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <p class="intro">Hi there, I’m</p>
+          <div class="identity">
+            <h1>Lee Hinze</h1>
+            <img class="profile-photo" src="https://avatars.githubusercontent.com/u/208219698?v=4" alt="Lee Hinze profile photo">
+          </div>
+          <p class="role">White Hat Hacker + Developer</p>
+          <p class="summary">I’m an ethical security researcher and developer focused on responsible vulnerability research, web pentesting, and secure digital experiences. I study systems to understand how they fail—and how to make them stronger.</p>
+          <div class="hero-actions"><a class="button" href="#work">Explore my work</a><a class="button" href="blog/">Read the journal</a></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="work" id="work">
+      <div class="container">
+        <span class="section-label">Selected work</span>
+        <h2 class="section-title">Projects shaped by curiosity, clarity, and security.</h2>
+        <div class="project-list">
+          <a class="project" href="https://github.com/LeeHinze/HackTheBox-WriteUp" target="_blank" rel="noopener"><small>Cybersecurity</small><h3>Hack The Box Writeups</h3><p>Practical walkthroughs covering enumeration, exploitation, privilege escalation, and lessons learned from Hack The Box machines.</p><span class="project-arrow">↗</span></a>
+          <a class="project" href="https://github.com/LeeHinze/CorporaKeylogger" target="_blank" rel="noopener"><small>Security tooling</small><h3>Corpora Keylogger</h3><p>A cybersecurity research project created for controlled environments, technical analysis, and educational purposes.</p><span class="project-arrow">↗</span></a>
+          <a class="project" href="https://github.com/LeeHinze/Web-Pentesting-Offensive-Thinking" target="_blank" rel="noopener"><small>eBook · Education</small><h3>Web Pentesting: Offensive Thinking</h3><p>An educational eBook about web penetration testing methodologies and developing an offensive security mindset.</p><span class="project-arrow">↗</span></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <div class="footer-links"><a href="https://github.com/LeeHinze" target="_blank" rel="noopener">GitHub</a><a href="mailto:contact@example.com">Email</a></div>
+      <p>© <span id="year"></span> Lee Hinze. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    const toggle=document.querySelector('#blogToggle');
+    const panel=document.querySelector('#blogPanel');
+    const setPanel=open=>{panel.classList.toggle('open',open);panel.setAttribute('aria-hidden',String(!open));toggle.setAttribute('aria-expanded',String(open))};
+    toggle.addEventListener('click',event=>{event.stopPropagation();setPanel(!panel.classList.contains('open'))});
+    panel.addEventListener('click',event=>event.stopPropagation());
+    document.addEventListener('click',()=>setPanel(false));
+    document.addEventListener('keydown',event=>{if(event.key==='Escape'){setPanel(false);toggle.focus()}});
+
+    let posts=[];
+    const postList=document.querySelector('#postList');
+    function renderPosts(items){postList.replaceChildren();if(!items.length){postList.innerHTML='<div class="panel-status">No matching updates.</div>';return}items.slice(0,6).forEach(post=>{const link=document.createElement('a');link.className='post-link';link.href='blog/post.html?id='+encodeURIComponent(post.id);const date=document.createElement('div');date.className='post-date';date.textContent=new Intl.DateTimeFormat('en',{month:'short',day:'numeric',year:'numeric'}).format(new Date(post.date));const title=document.createElement('div');title.className='post-title';title.textContent=post.title||'Untitled';link.append(date,title);postList.append(link)})}
+    fetch('blog/posts.json').then(response=>{if(!response.ok)throw new Error();return response.json()}).then(data=>{posts=data.sort((a,b)=>new Date(b.date)-new Date(a.date));renderPosts(posts)}).catch(()=>{postList.innerHTML='<div class="panel-status">Updates are unavailable. Run the site through a local server.</div>'});
+    document.querySelector('#blogSearch').addEventListener('input',event=>{const query=event.target.value.toLowerCase();renderPosts(posts.filter(post=>(post.title+' '+post.content).toLowerCase().includes(query)))});
+
+    document.querySelector('#year').textContent=new Date().getFullYear();
+    const siteNav=document.querySelector('#siteNav');
+    addEventListener('scroll',()=>siteNav.classList.toggle('scrolled',scrollY>12),{passive:true});
+  </script>
+</body>
+</html>
